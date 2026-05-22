@@ -289,7 +289,7 @@
     style="display:none;">
 
     <a-assets>
-      <a-asset-item id="avatar" src="dino.glb"></a-asset-item>
+      <a-asset-item id="avatar" src="avatar.glb"></a-asset-item>
       <!-- Cambia "video.mp4" por el nombre de tu archivo de video -->
       <video
         id="miVideo"
@@ -373,6 +373,11 @@
     let accionInterval = null;
 
     function iniciarAR() {
+      // Aprovechamos el tap del usuario para desbloquear el audio
+      const video = document.getElementById('miVideo');
+      video.muted = false;
+      video.play().then(() => video.pause()).catch(() => {});
+
       document.getElementById('splash').classList.add('hidden');
       document.getElementById('loader').style.display = 'flex';
 
@@ -400,8 +405,7 @@
         statusText.textContent = 'Poster detectado ✓';
         hint.classList.add('hidden');
         controls.classList.add('visible');
-        // Reproduce el video al detectar el poster
-        video.play().catch(e => console.warn('Autoplay bloqueado:', e));
+        video.play().catch(e => console.warn('Error reproduciendo:', e));
       });
 
       target.addEventListener('targetLost', () => {
@@ -409,7 +413,6 @@
         statusText.textContent = 'Buscando poster...';
         hint.classList.remove('hidden');
         controls.classList.remove('visible');
-        // Pausa el video cuando pierde el poster
         video.pause();
       });
     }
